@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: banking-postgres
+    environment:
+      POSTGRES_DB: bankingdb
+      POSTGRES_USER: bankuser
+      POSTGRES_PASSWORD: bankpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - banking-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bankuser -d bankingdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  banking-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: banking-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bankingdb
+      SPRING_DATASOURCE_USERNAME: bankuser
+      SPRING_DATASOURCE_PASSWORD: bankpass
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - banking-network
+
+volumes:
+  postgres_data:
+
+networks:
+  banking-network:
+    driver: bridge
