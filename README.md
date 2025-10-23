@@ -1,4 +1,3 @@
-Here is a complete README.md file based on all the commands that worked for you. You can copy and paste this directly into a file named README.md in your project's root folder (C:\Users\User\Downloads\banking-api\banking-api).
 
 🚀 Banking API Project
 This is a Spring Boot application for managing bank accounts and transactions. It uses a PostgreSQL database running in a Docker container.
